@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Django secret files
+.env
+*.env
+
+# VSCode / IDE files
+.vscode/
+.idea/
+
+# Byte-compiled and cache files
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.log
+
+# Migrations (optional if you want to keep them out)
+**/migrations/__pycache__/
+# Uncomment below if you don't want to push any migration files:
+# **/migrations/*.py
+
+# Static/media (optional - depends on use case)
+staticfiles/
+media/
+mediafiles/
+
+# Docker
+*.pid
+*.log
+docker-compose.override.yml
+**/__pycache__/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.coverage
+coverage.xml
+
+# System
+.DS_Store
+Thumbs.db
