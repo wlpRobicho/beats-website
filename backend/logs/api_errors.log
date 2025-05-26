@@ -1,0 +1,41 @@
+WARNING 2025-05-26 02:47:37,956 django.request | Unauthorized: /api/beats/no-merc/
+WARNING 2025-05-26 02:47:37,957 django.server | "GET /api/beats/no-merc/ HTTP/1.1" 401 123
+ERROR 2025-05-26 02:47:57,832 beats.views.list | Error retrieving beats list
+Traceback (most recent call last):
+  File "/app/beats/views/list.py", line 24, in list
+    response = super().list(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/rest_framework/mixins.py", line 43, in list
+    return self.get_paginated_response(serializer.data)
+                                       ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/rest_framework/serializers.py", line 797, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/rest_framework/serializers.py", line 251, in data
+    self._data = self.to_representation(self.instance)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/rest_framework/serializers.py", line 715, in to_representation
+    return [
+           ^
+  File "/usr/local/lib/python3.11/site-packages/rest_framework/serializers.py", line 716, in <listcomp>
+    self.child.to_representation(item) for item in iterable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/rest_framework/serializers.py", line 525, in to_representation
+    for field in fields:
+  File "/usr/local/lib/python3.11/site-packages/rest_framework/serializers.py", line 386, in _readable_fields
+    for field in self.fields.values():
+                 ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/rest_framework/serializers.py", line 375, in fields
+    fields[key] = value
+    ~~~~~~^^^^^
+  File "/usr/local/lib/python3.11/site-packages/rest_framework/utils/serializer_helpers.py", line 167, in __setitem__
+    field.bind(field_name=key, parent=self.serializer)
+  File "/usr/local/lib/python3.11/site-packages/rest_framework/fields.py", line 358, in bind
+    assert self.source != field_name, (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: It is redundant to specify `source='like_count'` on field 'IntegerField' in serializer 'BeatSerializer', because it is the same as the field name. Remove the `source` keyword argument.
+ERROR 2025-05-26 02:47:57,846 django.request | Internal Server Error: /api/beats/
+ERROR 2025-05-26 02:47:57,847 django.server | "GET /api/beats/ HTTP/1.1" 500 251

@@ -6,6 +6,7 @@ from mutagen.wave import WAVE
 from django.core.exceptions import ValidationError
 import os
 import logging
+from datetime import timedelta
 from .choices import GENRE_CHOICES, KEY_CHOICES, STATUS_CHOICES
 
 logger = logging.getLogger(__name__)
@@ -61,25 +62,27 @@ class Beat(models.Model):
             raise ValidationError("BPM must be between 50 and 300.")
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
+        is_new = self._state.adding and not self.pk
+        super().save(*args, **kwargs)  # First save to ensure file is on disk
 
-        if len(self.tags) > 255:
-            self.tags = self.tags[:252] + "..."
-
-        if self.audio_file and not self.duration:
+        # Now that the file exists on disk, extract duration
+        if is_new and self.audio_file and not self.duration:
             try:
-                ext = os.path.splitext(self.audio_file.path)[1].lower()
-                if ext == ".mp3":
-                    audio = MP3(self.audio_file.path)
-                    self.duration = audio.info.length
-                elif ext == ".wav":
-                    audio = WAVE(self.audio_file.path)
-                    self.duration = audio.info.length
-            except Exception as e:
-                logger.warning(f"[Beat Save] Could not extract duration for '{self.title}': {e}")
+                path = self.audio_file.path
+                ext = os.path.splitext(path)[1].lower()
 
-        super().save(*args, **kwargs)
+                if ext == '.mp3':
+                    audio = MP3(path)
+                    self.duration = timedelta(seconds=round(audio.info.length))
+                elif ext == '.wav':
+                    audio = WAVE(path)
+                    self.duration = timedelta(seconds=round(audio.info.length))
+
+                # Save duration only
+                super().save(update_fields=['duration'])
+
+            except Exception as e:
+                logger.warning(f"[Beat Save] Could not extract duration: {e}")
 
     def __str__(self):
         return self.title
